@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "pullebyte-back"
+version = "0.2.0"
+description = ""
+authors = ["Luizefz <luizefsilva2@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.4"
+uvicorn = "^0.32.0"
+pytest = "^8.3.3"
+pytest-cov = "^5.0.0"
+pydantic = {extras = ["email"], version = "^2.9.2"}
+black = "^24.10.0"
+sqlalchemy = "^2.0.36"
+pydantic-settings = "^2.6.0"
+alembic = "^1.13.3"
+
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.7.1"
+pytest = "^8.3.3"
+pytest-cov = "^5.0.0"
+taskipy = "^1.14.0"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+testpaths = "tests"
+
+[tool.ruff]
+line-length = 94
+
+[tool.ruff.lint]
+preview = true
+select = ['A','I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = "single"
+
+
+[tool.black]
+line-length = 94
+target-version = ["py39"]
+
+
+[tool.taskipy.tasks]
+run = "uvicorn pullebyte_back.main:app --reload"
+
+pre_test = 'task lint'
+test = "pytest --cov=pullebyte_back -vv"
+post_test = 'coverage html'
+
+lint = 'ruff check . & ruff check . --diff'
+format = 'black . && ruff check . --fix && ruff format'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
